@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    tty: true
+    stdin_open: true
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/code
+      - poetry:/home/docker/.cache
+    env_file:
+      - .env
+    depends_on:
+      - database
+      - redis
+
+  database:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=database
+    volumes: 
+      - db:/var/lib/postgresql/data
+
+  redis:
+    image: redis:5
+
+volumes: 
+  poetry:
+  db:
